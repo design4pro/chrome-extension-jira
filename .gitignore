@@ -1,0 +1,8 @@
+.vscode/
+node_modules/
+babel
+babelscripts@1.0.0
+out/
+/*.log
+/dist
+/dist-zip
