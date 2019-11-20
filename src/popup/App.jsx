@@ -1,10 +1,7 @@
 import React from 'react';
 
-export default class App extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-    render() {
-        return <div>popup</div>;
-    }
-}
+export const App = () => {
+    return <div>popup</div>;
+};
+
+export default App;

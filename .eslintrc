@@ -1,5 +1,5 @@
 {
-    "parser": "babel-eslint",
+    "parser": "@typescript-eslint/parser",
     "parserOptions": {
         "ecmaVersion": 6,
         "sourceType": "module",
@@ -12,10 +12,18 @@
         "browser": true,
         "webextensions": true
     },
-    "extends": ["eslint:recommended", "plugin:react/recommended", "plugin:prettier/recommended"],
+    "extends": [
+        "eslint:recommended",
+        "plugin:react/recommended",
+        "plugin:@typescript-eslint/recommended",
+        "plugin:prettier/recommended"
+    ],
     "plugins": ["react"],
     // check if imports actually resolve
     "settings": {
+        "react": {
+            "version": "detect"
+        },
         "import/resolver": {
             "webpack": {
                 "config": "./webpack.config.js"

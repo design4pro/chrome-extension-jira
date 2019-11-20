@@ -1,48 +1,57 @@
 const webpack = require('webpack');
 const ejs = require('ejs');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const ExtensionReloader = require('webpack-extension-reloader');
 const { version } = require('./package.json');
 
 const config = {
     mode: process.env.NODE_ENV,
+    // Enable sourcemaps for debugging webpack's output.
+    devtool: 'source-map',
     context: __dirname + '/src',
     entry: {
-        'content-script/content-script': './content-script/content-script.jsx',
-        'background': './background.jsx',
-        'popup/popup': './popup/popup.jsx',
-        'options/options': './options/options.jsx',
+        'content-script/content-script': './content-script/content-script.tsx',
+        'background': './background.tsx',
+        'popup/popup': './popup/popup.tsx',
+        'options/options': './options/options.tsx',
     },
-
     output: {
         path: __dirname + '/dist',
         filename: '[name].js',
     },
     module: {
         rules: [
+            /**
+             * ESLINT
+             * First, run the linter.
+             * It's important to do this before Babel processes the JS.
+             * Only testing .ts and .tsx files (React code)
+             */
             {
-                test: /\.(js|jsx)$/,
+                test: /\.(ts|tsx)$/,
+                enforce: 'pre',
+                use: [
+                    {
+                        options: {
+                            eslintPath: require.resolve('eslint'),
+                        },
+                        loader: require.resolve('eslint-loader'),
+                    },
+                ],
                 exclude: /node_modules/,
-                use: ['babel-loader'],
             },
             {
-                test: /\.s[ac]ss$/,
+                test: /\.(ts|tsx)$/,
+                exclude: /node_modules/,
                 use: [
-                    MiniCssExtractPlugin.loader,
-                    'css-loader',
                     {
-                        loader: 'sass-loader',
-                        options: {
-                            // Prefer `dart-sass`
-                            implementation: require('sass'),
-                        },
+                        loader: require.resolve('ts-loader'),
                     },
                 ],
             },
             {
                 test: /\.(png|jpg|jpeg|gif|svg|ico)$/,
-                loader: 'file-loader',
+                loader: require.resolve('file-loader'),
                 options: {
                     name: '[name].[ext]',
                     outputPath: '/images/',
@@ -51,24 +60,35 @@ const config = {
             },
             {
                 test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
-                loader: 'file-loader',
+                loader: require.resolve('file-loader'),
                 options: {
                     name: '[name].[ext]',
                     outputPath: '/fonts/',
                     emitFile: false,
                 },
             },
+            // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
+            {
+                enforce: 'pre',
+                test: /\.js$/,
+                loader: 'source-map-loader',
+            },
         ],
     },
     resolve: {
-        extensions: ['*', '.js', '.jsx'],
+        extensions: ['.ts', '.tsx'],
+    },
+    // When importing a module whose path matches one of the following, just
+    // assume a corresponding global variable exists and use that instead.
+    // This is important because it allows us to avoid bundling all of our
+    // dependencies, which allows browsers to cache those libraries between builds.
+    externals: {
+        'react': 'React',
+        'react-dom': 'ReactDOM',
     },
     plugins: [
         new webpack.DefinePlugin({
             global: 'window',
-        }),
-        new MiniCssExtractPlugin({
-            filename: '[name].css',
         }),
         new CopyWebpackPlugin([
             { from: 'assets/', force: true },
