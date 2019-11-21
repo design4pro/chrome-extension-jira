@@ -14,12 +14,11 @@ const config = {
     mode: process.env.NODE_ENV,
     // Enable sourcemaps for debugging webpack's output.
     devtool: 'source-map',
-    context: __dirname + '/src',
     entry: {
-        'content-script/content-script': './content-script/content-script.tsx',
-        'background': './background.tsx',
-        'popup/popup': './popup/popup.tsx',
-        'options/options': './options/options.tsx',
+        'content-script/content-script': path.join(__dirname, 'src/content-script/content-script.tsx'),
+        'background': path.join(__dirname, 'src/background.tsx'),
+        'popup/popup': path.join(__dirname, 'src/popup/popup.tsx'),
+        'options/options': path.join(__dirname, 'src/options/options.tsx'),
     },
     output: {
         path: __dirname + '/dist',
@@ -113,26 +112,30 @@ const config = {
         new webpack.DefinePlugin({
             global: 'window',
         }),
-        new CopyWebpackPlugin([
-            { from: 'shared/_locales', to: '_locales', force: true },
-            { from: 'shared/assets', to: 'assets', force: true },
-            { from: 'popup/popup.html', to: 'popup/popup.html', transform: transformHtml },
-            { from: 'options/options.html', to: 'options/options.html', transform: transformHtml },
-            {
-                from: 'shared/manifest.json',
-                to: 'manifest.json',
-                transform: content => {
-                    const jsonContent = JSON.parse(content);
-                    jsonContent.version = version;
+        new CopyWebpackPlugin(
+            [
+                { from: '_locales', to: '_locales', force: true },
+                { from: 'assets', to: 'assets', force: true },
+                { from: 'popup/popup.html', to: 'popup/popup.html', transform: transformHtml },
+                { from: 'options/options.html', to: 'options/options.html', transform: transformHtml },
+                {
+                    from: 'manifest.json',
+                    to: 'manifest.json',
+                    transform: content => {
+                        const jsonContent = JSON.parse(content);
+                        jsonContent.version = version;
 
-                    if (config.mode === 'development') {
-                        jsonContent['content_security_policy'] = "script-src 'self' 'unsafe-eval'; object-src 'self'";
-                    }
+                        if (config.mode === 'development') {
+                            jsonContent['content_security_policy'] =
+                                "script-src 'self' 'unsafe-eval'; object-src 'self'";
+                        }
 
-                    return JSON.stringify(jsonContent, null, 2);
+                        return JSON.stringify(jsonContent, null, 2);
+                    },
                 },
-            },
-        ]),
+            ],
+            { context: 'src' }
+        ),
         new webpack.HotModuleReplacementPlugin(),
     ],
     devServer: {
@@ -174,7 +177,7 @@ if (config.mode === 'production') {
 if (process.env.HMR === 'true') {
     config.plugins = (config.plugins || []).concat([
         new ExtensionReloader({
-            manifest: __dirname + '/src/shared/manifest.json',
+            manifest: __dirname + '/src/manifest.json',
         }),
     ]);
 }

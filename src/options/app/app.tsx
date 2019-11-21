@@ -1,17 +1,50 @@
+import { PaletteType } from '@material-ui/core';
 import Container from '@material-ui/core/Container';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
-import React, { useState } from 'react';
+import { useCheckLocalStorageSchema } from 'hooks/check-local-storage-schema';
+import React, { Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react';
+import reducers from 'state/reducers';
+import initialState from 'state/store/initial-state';
+import { StoreProvider } from 'state/store/provider';
+import { getBrowserTheme, onBrowserThemeChanged } from 'util/browser-theme';
+import { getLocalStorageTheme, setLocalStorageTheme } from 'util/local-storage';
 import { Layout } from './layout';
-import { ThemeOptions } from '@material-ui/core/styles/createMuiTheme';
 
 export const App = () => {
+    // Clear local storage is schema version not match
+    useCheckLocalStorageSchema();
+
+    const [initialized, setInitialized] = useState(false);
     // We keep the theme in app state
-    const [theme, setTheme] = useState<ThemeOptions>({
-        palette: {
-            type: 'light',
+    const [theme, setTheme] = useState<PaletteType>('light');
+
+    const updateTheme: Dispatch<SetStateAction<PaletteType>> = useCallback(
+        newTheme => {
+            if (typeof newTheme === 'function') {
+                setTheme(currentTheme => {
+                    const actualNewTheme = newTheme(currentTheme);
+
+                    setLocalStorageTheme(actualNewTheme);
+
+                    return actualNewTheme;
+                });
+            } else {
+                setLocalStorageTheme(newTheme);
+
+                setTheme(newTheme);
+            }
         },
-    });
+        [setTheme]
+    );
+
+    useEffect(() => {
+        if (!initialized) {
+            setTheme(getLocalStorageTheme() || getBrowserTheme());
+            setInitialized(true);
+        }
+        return onBrowserThemeChanged(updateTheme);
+    }, [updateTheme, setTheme, initialized, setInitialized]);
 
     // we change the palette type of the theme in state
     // const toggleDarkTheme = () => {
@@ -25,15 +58,21 @@ export const App = () => {
     // };
 
     // we generate a MUI-theme from state's theme object
-    const muiTheme = createMuiTheme(theme);
+    const muiTheme = createMuiTheme({
+        palette: {
+            type: theme,
+        },
+    });
 
     return (
-        <ThemeProvider theme={muiTheme}>
-            <CssBaseline />
-            <Container fixed maxWidth='md'>
-                <Layout />
-            </Container>
-        </ThemeProvider>
+        <StoreProvider initialState={initialState} reducer={reducers}>
+            <ThemeProvider theme={muiTheme}>
+                <CssBaseline />
+                <Container fixed maxWidth='md'>
+                    <Layout />
+                </Container>
+            </ThemeProvider>
+        </StoreProvider>
     );
 };
 
