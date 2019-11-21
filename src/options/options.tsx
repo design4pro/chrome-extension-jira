@@ -1,6 +1,7 @@
-import * as React from 'react';
+import React from 'react';
 import { render } from 'react-dom';
-import App from './App';
+
+import App from './app/app';
 
 const Element = document.createElement('div');
 Element.setAttribute('id', 'dfghbnjmERHJKFGHNMVBNMFBNMbmvvxnbdgf');

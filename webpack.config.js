@@ -1,7 +1,13 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
+const path = require('path');
 const webpack = require('webpack');
 const ejs = require('ejs');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const TerserWebpackPlugin = require('terser-webpack-plugin');
+const TsConfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const ExtensionReloader = require('webpack-extension-reloader');
+const { BuildOptimizerWebpackPlugin, buildOptimizerLoaderPath } = require('@angular-devkit/build-optimizer');
 const { version } = require('./package.json');
 
 const config = {
@@ -28,7 +34,7 @@ const config = {
              * Only testing .ts and .tsx files (React code)
              */
             {
-                test: /\.(ts|tsx)$/,
+                test: /\.([jt])sx?$/,
                 enforce: 'pre',
                 use: [
                     {
@@ -41,13 +47,14 @@ const config = {
                 exclude: /node_modules/,
             },
             {
-                test: /\.(ts|tsx)$/,
+                test: /\.([jt])sx?$/,
+                loader: `babel-loader`,
                 exclude: /node_modules/,
-                use: [
-                    {
-                        loader: require.resolve('ts-loader'),
-                    },
-                ],
+                options: {
+                    compact: false,
+                    cacheDirectory: true,
+                    cacheCompression: false,
+                },
             },
             {
                 test: /\.(png|jpg|jpeg|gif|svg|ico)$/,
@@ -67,6 +74,16 @@ const config = {
                     emitFile: false,
                 },
             },
+            {
+                test: /\.js$/,
+                // Factory files are processed by BO in the rules added in typescript.ts.
+                use: [
+                    {
+                        loader: buildOptimizerLoaderPath,
+                        options: { sourceMap: true },
+                    },
+                ],
+            },
             // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
             {
                 enforce: 'pre',
@@ -76,26 +93,33 @@ const config = {
         ],
     },
     resolve: {
-        extensions: ['.ts', '.tsx'],
+        extensions: ['.ts', '.tsx', '.mjs', '.js', '.jsx'],
+        plugins: [
+            new TsConfigPathsPlugin({
+                configFile: path.resolve(__dirname, 'tsconfig.json'),
+                extensions: ['.ts', '.tsx', '.mjs', '.js', '.jsx'],
+                mainFields: ['es2015', 'module', 'main'],
+            }),
+        ],
     },
-    // When importing a module whose path matches one of the following, just
-    // assume a corresponding global variable exists and use that instead.
-    // This is important because it allows us to avoid bundling all of our
-    // dependencies, which allows browsers to cache those libraries between builds.
-    externals: {
-        'react': 'React',
-        'react-dom': 'ReactDOM',
+    performance: {
+        hints: false,
     },
     plugins: [
+        new BuildOptimizerWebpackPlugin(),
+        new ForkTsCheckerWebpackPlugin({
+            tsconfig: path.resolve(__dirname, 'tsconfig.json'),
+        }),
         new webpack.DefinePlugin({
             global: 'window',
         }),
         new CopyWebpackPlugin([
-            { from: 'assets/', force: true },
+            { from: 'shared/_locales', to: '_locales', force: true },
+            { from: 'shared/assets', to: 'assets', force: true },
             { from: 'popup/popup.html', to: 'popup/popup.html', transform: transformHtml },
             { from: 'options/options.html', to: 'options/options.html', transform: transformHtml },
             {
-                from: 'manifest.json',
+                from: 'shared/manifest.json',
                 to: 'manifest.json',
                 transform: content => {
                     const jsonContent = JSON.parse(content);
@@ -125,12 +149,32 @@ if (config.mode === 'production') {
             },
         }),
     ]);
+
+    config.optimization = {
+        minimizer: [
+            new TerserWebpackPlugin({
+                parallel: true,
+                cache: true,
+                terserOptions: {
+                    ecma: 6,
+                    safari10: true,
+                    output: {
+                        // eslint-disable-next-line @typescript-eslint/camelcase
+                        ascii_only: true,
+                        comments: false,
+                        webkit: true,
+                    },
+                },
+            }),
+        ],
+        runtimeChunk: true,
+    };
 }
 
 if (process.env.HMR === 'true') {
     config.plugins = (config.plugins || []).concat([
         new ExtensionReloader({
-            manifest: __dirname + '/src/manifest.json',
+            manifest: __dirname + '/src/shared/manifest.json',
         }),
     ]);
 }

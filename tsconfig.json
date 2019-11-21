@@ -1,19 +1,26 @@
 {
     "compileOnSave": false,
     "compilerOptions": {
-        "target": "es5",
-        "module": "commonjs",
-        "sourceMap": false,
-        "types": ["@types/chrome", "node"],
-        "typeRoots": ["node_modules/@types"],
+        "sourceMap": true,
+        "declaration": false,
         "moduleResolution": "node",
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "importHelpers": true,
+        "target": "es2015",
+        "module": "esnext",
+        "typeRoots": ["node_modules/@types"],
+        "types": ["node"],
         "lib": ["es2017", "dom"],
-        "jsx": "react"
+        "skipLibCheck": true,
+        "skipDefaultLibCheck": true,
+        "baseUrl": ".",
+        "paths": {},
+        "jsx": "react",
+        "allowJs": true,
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true
     },
-    "include": [
-        "./src/background.tsx",
-        "./src/content-script/content-script.tsx",
-        "./src/options/options.tsx",
-        "./src/popup/popup.tsx"
-    ]
+    "exclude": ["node_modules", "tmp", "**/*.spec.ts", "**/*.spec.tsx"],
+    "include": ["src/**/*.ts", "src/**/*.tsx"]
 }
