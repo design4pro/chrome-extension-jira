@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const useLocalStorage = (key: string, initialValue?: any, raw?: boolean) => {
     const [state, setState] = useState(() => {
         try {

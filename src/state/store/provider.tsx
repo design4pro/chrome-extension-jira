@@ -1,15 +1,9 @@
-import React, { Children, FC, ReactNode, useReducer } from 'react';
+import React, { Children, useReducer } from 'react';
+import PropTypes from 'prop-types';
 import isPlainObject from './../../util/is-plain-object';
 import StateContext from './context';
 
-type Props = {
-    reducer: any;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    initialState: Record<string, any>;
-    children: ReactNode;
-};
-
-export const StoreProvider: FC<Props> = ({ reducer, initialState, children }) => {
+export const StoreProvider = ({ reducer, initialState, children }) => {
     if (!isPlainObject(initialState)) {
         throw new Error('Provider Expected the initialState to be a PlainObject');
     }
@@ -20,3 +14,11 @@ export const StoreProvider: FC<Props> = ({ reducer, initialState, children }) =>
         </StateContext.Provider>
     );
 };
+
+StoreProvider.propTypes = {
+    reducer: PropTypes.func,
+    initialState: PropTypes.object,
+    children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
+};
+
+export default StoreProvider;

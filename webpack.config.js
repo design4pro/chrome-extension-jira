@@ -15,10 +15,13 @@ const config = {
     // Enable sourcemaps for debugging webpack's output.
     devtool: 'source-map',
     entry: {
-        'content-script/content-script': path.join(__dirname, 'src/content-script/content-script.tsx'),
-        'background': path.join(__dirname, 'src/background.tsx'),
-        'popup/popup': path.join(__dirname, 'src/popup/popup.tsx'),
-        'options/options': path.join(__dirname, 'src/options/options.tsx'),
+        'content-script/content-script': [
+            path.join(__dirname, 'src/polyfills.ts'),
+            path.join(__dirname, 'src/content-script/content-script.tsx'),
+        ],
+        'background': [path.join(__dirname, 'src/polyfills.ts'), path.join(__dirname, 'src/background.tsx')],
+        'popup/popup': [path.join(__dirname, 'src/polyfills.ts'), path.join(__dirname, 'src/popup/popup.tsx')],
+        'options/options': [path.join(__dirname, 'src/polyfills.ts'), path.join(__dirname, 'src/options/options.tsx')],
     },
     output: {
         path: __dirname + '/dist',

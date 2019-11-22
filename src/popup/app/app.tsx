@@ -9,8 +9,8 @@ import { getBrowserTheme, onBrowserThemeChanged } from 'util/browser-theme';
 import { getLocalStorageTheme, setLocalStorageTheme } from 'util/local-storage';
 import { Layout } from './layout';
 
-const BG: any = chrome.extension.getBackgroundPage();
-const store = BG.store;
+// const BG: any = chrome.extension.getBackgroundPage();
+// const store = BG.store;
 
 export const App = () => {
     // Clear local storage is schema version not match
