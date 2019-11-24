@@ -1,11 +1,11 @@
 import React from 'react';
 import { render } from 'react-dom';
 import App from './app/app';
-import * as serviceWorker from './serviceWorker';
+import * as serviceWorker from './service-worker';
 
-const Element = document.createElement('div');
-Element.setAttribute('id', 'dfghbnjmERHJKFGHNMVBNMFBNMbmvvxnbdgf');
-document.body.appendChild(Element);
+const element = document.createElement('div');
+element.setAttribute('id', 'dfghbnjmERHJKFGHNMVBNMFBNMbmvvxnbdgf');
+document.body.appendChild(element);
 render(<App />, document.getElementById('dfghbnjmERHJKFGHNMVBNMFBNMbmvvxnbdgf'));
 
 // If you want your app to work offline and load faster, you can change

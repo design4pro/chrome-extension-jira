@@ -2,7 +2,7 @@ import { PaletteType } from '@material-ui/core';
 
 const getMql = () => (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)')) || undefined;
 
-export const getBrowserTheme = () => {
+export const getBrowserTheme = (): PaletteType => {
     const mql = getMql();
 
     return mql && mql.matches ? 'dark' : 'light';

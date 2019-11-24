@@ -1,5 +1,4 @@
-import * as types from '../actions/types';
-import * as app from './app';
+import AppReducers from './app';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const createReducer = (handlers: any) => (state, action) => {
@@ -11,5 +10,5 @@ const createReducer = (handlers: any) => (state, action) => {
 };
 
 export default createReducer({
-    [types.SHOW_STATE]: app.showState,
+    ...AppReducers,
 });

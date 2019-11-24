@@ -1,13 +1,13 @@
 import { Container, createMuiTheme, CssBaseline, PaletteType } from '@material-ui/core';
 import { ThemeProvider } from '@material-ui/styles';
-import { useCheckLocalStorageSchema } from 'hooks/check-local-storage-schema';
 import { Layout } from 'options/app/layout';
 import React, { Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react';
-import reducers from 'state/reducers';
-import initialState from 'state/store/initial-state';
-import { StoreProvider } from 'state/store/provider';
-import { getBrowserTheme, onBrowserThemeChanged } from 'util/browser-theme';
-import { getLocalStorageTheme, setLocalStorageTheme } from 'util/local-storage';
+import reducers from 'shared/state/reducers';
+import initialState from 'shared/state/store/initial-state';
+import { StoreProvider } from 'shared/state/store/provider';
+import { useCheckLocalStorageSchema } from 'shared/util/local-storage/use-check-local-storage-schema';
+import { getBrowserTheme, onBrowserThemeChanged } from 'shared/util/theme/browser-theme';
+import { getLocalStorageTheme, setLocalStorageTheme } from 'shared/util/theme/local-storage';
 
 export const App = () => {
     // Clear local storage is schema version not match

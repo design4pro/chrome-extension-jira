@@ -1,9 +1,8 @@
 import React from 'react';
 import { render } from 'react-dom';
+import AppContainer from './app/app-container';
 
-import App from './app/app';
-
-const Element = document.createElement('div');
-Element.setAttribute('id', 'dfghbnjmERHJKFGHNMVBNMFBNMbmvvxnbdgf');
-document.body.appendChild(Element);
-render(<App />, document.getElementById('dfghbnjmERHJKFGHNMVBNMFBNMbmvvxnbdgf'));
+const element = document.createElement('div');
+element.setAttribute('id', 'dfghbnjmERHJKFGHNMVBNMFBNMbmvvxnbdgf');
+document.body.appendChild(element);
+render(<AppContainer />, document.getElementById('dfghbnjmERHJKFGHNMVBNMFBNMbmvvxnbdgf'));

@@ -19,7 +19,7 @@ const config = {
             path.join(__dirname, 'src/polyfills.ts'),
             path.join(__dirname, 'src/content-script/content-script.tsx'),
         ],
-        'background': [path.join(__dirname, 'src/polyfills.ts'), path.join(__dirname, 'src/background.tsx')],
+        'background': [path.join(__dirname, 'src/polyfills.ts'), path.join(__dirname, 'src/background/background.ts')],
         'popup/popup': [path.join(__dirname, 'src/polyfills.ts'), path.join(__dirname, 'src/popup/popup.tsx')],
         'options/options': [path.join(__dirname, 'src/polyfills.ts'), path.join(__dirname, 'src/options/options.tsx')],
     },

@@ -1,20 +1,18 @@
 import { createMuiTheme, CssBaseline, PaletteType } from '@material-ui/core';
 import { ThemeProvider } from '@material-ui/styles';
-import { useCheckLocalStorageSchema } from 'hooks/check-local-storage-schema';
+import { WindowExtension } from 'background/model/background';
 import React, { Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react';
-import reducers from 'state/reducers';
-import initialState from 'state/store/initial-state';
-import { StoreProvider } from 'state/store/provider';
-import { getBrowserTheme, onBrowserThemeChanged } from 'util/browser-theme';
-import { getLocalStorageTheme, setLocalStorageTheme } from 'util/local-storage';
+import { StoreProvider } from 'shared/state/store/provider';
+import { useCheckLocalStorageSchema } from 'shared/util/local-storage/use-check-local-storage-schema';
+import { getBrowserTheme, onBrowserThemeChanged } from 'shared/util/theme/browser-theme';
+import { getLocalStorageTheme, setLocalStorageTheme } from 'shared/util/theme/local-storage';
 import { Layout } from './layout';
-
-// const BG: any = chrome.extension.getBackgroundPage();
-// const store = BG.store;
 
 export const App = () => {
     // Clear local storage is schema version not match
     useCheckLocalStorageSchema();
+
+    const [title, setTitle] = useState('popup');
 
     const [initialized, setInitialized] = useState(false);
     // We keep the theme in app state
@@ -43,7 +41,28 @@ export const App = () => {
         if (!initialized) {
             setTheme(getLocalStorageTheme() || getBrowserTheme());
             setInitialized(true);
+
+            const getBackgroundPage = (): Promise<WindowExtension> => {
+                return new Promise<WindowExtension>((resolve, reject) => {
+                    if (chrome.runtime.lastError) {
+                        reject("Background can't be loaded");
+                    }
+
+                    chrome.runtime.getBackgroundPage(page =>
+                        page ? resolve(page as WindowExtension) : reject("Background can't be loaded")
+                    );
+                });
+            };
+
+            const start = async () => {
+                const background = await getBackgroundPage();
+
+                setTitle(background.getName);
+            };
+
+            start();
         }
+
         return onBrowserThemeChanged(updateTheme);
     }, [updateTheme, setTheme, initialized, setInitialized]);
 
@@ -55,10 +74,10 @@ export const App = () => {
     });
 
     return (
-        <StoreProvider initialState={initialState} reducer={reducers}>
+        <StoreProvider>
             <ThemeProvider theme={muiTheme}>
                 <CssBaseline />
-                <Layout />
+                <Layout name={title} />
             </ThemeProvider>
         </StoreProvider>
     );

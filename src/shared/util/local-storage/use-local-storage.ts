@@ -5,10 +5,12 @@ export const useLocalStorage = (key: string, initialValue?: any, raw?: boolean) 
     const [state, setState] = useState(() => {
         try {
             const localStorageValue = localStorage.getItem(key);
+
             if (typeof localStorageValue !== 'string') {
                 if (initialValue !== undefined) {
                     localStorage.setItem(key, raw ? String(initialValue) : JSON.stringify(initialValue));
                 }
+
                 return initialValue;
             } else {
                 return raw ? localStorageValue : JSON.parse(localStorageValue || 'null');
