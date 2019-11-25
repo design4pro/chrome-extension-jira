@@ -6,6 +6,7 @@ import reducers from 'shared/state/reducers';
 import initialState from 'shared/state/store/initial-state';
 import { StoreProvider } from 'shared/state/store/provider';
 import { useCheckLocalStorageSchema } from 'shared/util/local-storage/use-check-local-storage-schema';
+import { ThemeType } from 'shared/util/theme';
 import { getBrowserTheme, onBrowserThemeChanged } from 'shared/util/theme/browser-theme';
 import { getLocalStorageTheme, setLocalStorageTheme } from 'shared/util/theme/local-storage';
 
@@ -17,7 +18,7 @@ export const App = () => {
     // We keep the theme in app state
     const [theme, setTheme] = useState<PaletteType>('light');
 
-    const updateTheme: Dispatch<SetStateAction<PaletteType>> = useCallback(
+    const updateTheme: Dispatch<SetStateAction<ThemeType | PaletteType>> = useCallback(
         newTheme => {
             if (typeof newTheme === 'function') {
                 setTheme(currentTheme => {

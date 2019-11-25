@@ -1,4 +1,5 @@
 import { PaletteType } from '@material-ui/core';
+import { ThemeType } from './../theme';
 
 export const getLocalStorageTheme = (): PaletteType => {
     const localTheme = window.localStorage && (window.localStorage.getItem('theme') as PaletteType);
@@ -8,6 +9,6 @@ export const getLocalStorageTheme = (): PaletteType => {
     }
 };
 
-export const setLocalStorageTheme = (theme: PaletteType) => {
+export const setLocalStorageTheme = (theme: ThemeType) => {
     localStorage.setItem('theme', theme);
 };

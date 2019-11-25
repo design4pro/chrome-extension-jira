@@ -5,13 +5,12 @@ import isPlainObject from '../../util/is-plain-object';
 import StoreContext from './context';
 import initialState from './initial-state';
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export const asyncer = (dispatch: any, state: any) => (action: any) =>
     typeof action === 'function' ? action(dispatch, state) : dispatch(action);
 
 export const StoreProvider = ({ children }) => {
     const [state, dispatchRoot] = useReducer(reducers, initialState);
-
-    console.log({ state });
 
     if (!isPlainObject(initialState)) {
         throw new Error('Provider Expected the initialState to be a PlainObject');
