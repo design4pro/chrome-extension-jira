@@ -5,6 +5,8 @@ export interface ContextProps {
     state: any;
     /* eslint-disable @typescript-eslint/no-explicit-any */
     dispatch: any;
+    /* eslint-disable @typescript-eslint/no-explicit-any */
+    writeError: any;
 }
 
 export const StoreContext = createContext({} as ContextProps);

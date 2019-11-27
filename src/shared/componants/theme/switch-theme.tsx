@@ -1,37 +1,22 @@
-import { PaletteType } from '@material-ui/core';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import Brightness4 from '@material-ui/icons/Brightness4';
 import Brightness7 from '@material-ui/icons/Brightness7';
 import BrightnessAuto from '@material-ui/icons/BrightnessAuto';
 import React, { Dispatch, SetStateAction, useCallback, useEffect } from 'react';
-import { KEY_THEME } from 'shared/util/local-storage';
-import useLocalStorage from 'shared/util/local-storage/use-local-storage';
 import { ThemeType } from 'shared/util/theme';
 import { onBrowserThemeChanged } from 'shared/util/theme/browser-theme';
 import { useTheme } from './use-theme';
 
 export const SwitchTheme = () => {
     const [theme, setTheme] = useTheme();
-    const [state, setState] = useLocalStorage(KEY_THEME);
 
-    const updateTheme: Dispatch<SetStateAction<ThemeType | PaletteType>> = useCallback(
-        (newTheme: (theme: ThemeType) => ThemeType | ThemeType | PaletteType) => {
-            if (typeof newTheme === 'function') {
-                setTheme((currentTheme: ThemeType) => {
-                    const actualNewTheme: ThemeType = newTheme(currentTheme);
-
-                    setState(actualNewTheme);
-
-                    return actualNewTheme;
-                });
-            } else {
-                setState(newTheme);
-
-                setTheme(newTheme);
-            }
+    const updateTheme: Dispatch<SetStateAction<ThemeType>> = useCallback(
+        (newTheme: ThemeType) => {
+            console.log({ newTheme });
+            setTheme(newTheme);
         },
-        [setTheme, setState]
+        [setTheme]
     );
     const setDarkTheme = useCallback(() => updateTheme('dark'), [updateTheme]);
     const setLightTheme = useCallback(() => updateTheme('light'), [updateTheme]);
@@ -42,7 +27,7 @@ export const SwitchTheme = () => {
     return (
         <React.Fragment>
             {theme === 'auto' && (
-                <Tooltip title='Toggle light/auto/dark theme' aria-label='Toggle light/auto/dark theme'>
+                <Tooltip title='Toggle dark/light/auto theme' aria-label='Toggle dark/light/auto theme'>
                     <IconButton onClick={setDarkTheme} color='inherit'>
                         <BrightnessAuto></BrightnessAuto>
                     </IconButton>
@@ -50,7 +35,7 @@ export const SwitchTheme = () => {
             )}
 
             {theme === 'light' && (
-                <Tooltip title='Toggle light/auto/dark theme' aria-label='Toggle light/auto/dark theme'>
+                <Tooltip title='Toggle auto/dark/light theme' aria-label='Toggle auto/dark/light theme'>
                     <IconButton onClick={setAutoTheme} color='inherit'>
                         <Brightness4></Brightness4>
                     </IconButton>

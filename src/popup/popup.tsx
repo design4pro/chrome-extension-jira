@@ -1,12 +1,12 @@
 import React from 'react';
 import { render } from 'react-dom';
-import App from './app/app';
+import AppContainer from './app/app-container';
 import * as serviceWorker from './service-worker';
 
 const element = document.createElement('div');
 element.setAttribute('id', 'dfghbnjmERHJKFGHNMVBNMFBNMbmvvxnbdgf');
 document.body.appendChild(element);
-render(<App />, document.getElementById('dfghbnjmERHJKFGHNMVBNMFBNMbmvvxnbdgf'));
+render(<AppContainer />, document.getElementById('dfghbnjmERHJKFGHNMVBNMFBNMbmvvxnbdgf'));
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

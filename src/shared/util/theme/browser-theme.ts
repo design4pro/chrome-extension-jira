@@ -1,4 +1,4 @@
-import { PaletteType } from '@material-ui/core/';
+import { PaletteType } from '@material-ui/core';
 
 const getMql = () => (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)')) || undefined;
 
