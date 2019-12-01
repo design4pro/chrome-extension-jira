@@ -4,8 +4,8 @@ import Brightness4 from '@material-ui/icons/Brightness4';
 import Brightness7 from '@material-ui/icons/Brightness7';
 import BrightnessAuto from '@material-ui/icons/BrightnessAuto';
 import React, { Dispatch, SetStateAction, useCallback, useEffect } from 'react';
-import { ThemeType } from 'shared/util/theme';
-import { onBrowserThemeChanged } from 'shared/util/theme/browser-theme';
+import { onBrowserThemeChanged } from '../../util/browser-theme';
+import { ThemeType } from './model';
 import { useTheme } from './use-theme';
 
 export const SwitchTheme = () => {
@@ -13,7 +13,6 @@ export const SwitchTheme = () => {
 
     const updateTheme: Dispatch<SetStateAction<ThemeType>> = useCallback(
         (newTheme: ThemeType) => {
-            console.log({ newTheme });
             setTheme(newTheme);
         },
         [setTheme]

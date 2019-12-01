@@ -1,4 +1,4 @@
-import { ThemeType } from 'shared/util/theme';
+import { ThemeType } from 'shared/componants/theme/model';
 import ActionTypes from '../types';
 
-export const setTheme = (state: ThemeType) => ({ type: ActionTypes.SET_THEME, payload: { state } });
+export const setTheme = (theme: ThemeType) => ({ type: ActionTypes.SET_THEME, payload: { theme } });

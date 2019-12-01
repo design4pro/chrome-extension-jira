@@ -1,24 +1,11 @@
 import Actions from 'shared/state/actions';
-import { useStore } from 'shared/state/store/use-store';
-import { ThemeType } from 'shared/util/theme';
-import { getBrowserTheme } from 'shared/util/theme/browser-theme';
+import { useStore } from 'shared/state/store/hooks';
+import { ThemeType } from './model';
 
 export const useTheme = (): [ThemeType, (theme: ThemeType) => void] => {
-    const { state, dispatch, writeError } = useStore();
-
-    console.log(useStore());
-
+    const { state, dispatch } = useStore();
+    const { theme } = state;
     const setTheme = (theme: ThemeType) => dispatch(Actions.setTheme(theme));
-
-    console.log({ writeError });
-
-    let { theme } = state;
-
-    if (theme === 'auto') {
-        console.log({ theme }, getBrowserTheme());
-
-        theme = getBrowserTheme() as ThemeType;
-    }
 
     return [theme, setTheme];
 };

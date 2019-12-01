@@ -4,6 +4,5 @@ export const KEY_SCHEMA_VERSION = 'schemaVersion';
 export const KEY_THEME = 'theme';
 
 export default {
-    state: true,
     theme: 'light',
 };

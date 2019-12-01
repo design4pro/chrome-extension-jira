@@ -13,6 +13,7 @@ export const useStorageListener = <V>(key: string, onChange: (newValue: V) => vo
 
     useEffect(() => {
         window.addEventListener('storage', handleStorageChange);
+
         return () => {
             window.removeEventListener('storage', handleStorageChange);
         };
@@ -45,6 +46,7 @@ export const useStorageWriter = <S>(storage: Storage, key: string, state: S): Er
 const readItem = <S>(storage: Storage, key: string): S | null => {
     try {
         const storedValue = storage.getItem(key);
+
         return fromStorage(storedValue);
     } catch (e) {
         return null;

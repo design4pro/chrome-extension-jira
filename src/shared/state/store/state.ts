@@ -1,10 +1,10 @@
-import { useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { useStorageListener, useStorageReader, useStorageWriter } from './storage';
 
 const createUseStorageState = (storage: Storage) => <S>(
     key: string,
     defaultState: S | (() => S)
-): [S, React.Dispatch<React.SetStateAction<S>>, Error | undefined] => {
+): [S, Dispatch<SetStateAction<S>>, Error | undefined] => {
     const savedState = useStorageReader(storage, key, defaultState);
 
     const [state, setState] = useState(savedState);

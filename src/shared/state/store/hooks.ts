@@ -1,4 +1,5 @@
-import { useReducer, useState } from 'react';
+import { useContext, useReducer, useState } from 'react';
+import StoreContext from './context';
 import createUseStorageReducer from './reducer';
 import createUseStorageState from './state';
 
@@ -33,3 +34,5 @@ export const useLocalStorageState = createUseState(getLocalStorage());
 export const useSessionStorageState = createUseState(getSessionStorage());
 export const useLocalStorageReducer = createUseReducer(getLocalStorage());
 export const useSessionStorageReducer = createUseReducer(getSessionStorage());
+
+export const useStore = () => useContext(StoreContext);
