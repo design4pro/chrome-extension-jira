@@ -7,7 +7,7 @@ export interface WindowExtension extends Window {
 
 class Background {
     public initAsPromised(): Promise<void> {
-        return new Promise(resolve => {
+        return new Promise((resolve) => {
             logger.log('background', 'PERFORMING BACKGROUND INIT...');
 
             this.addChromeListeners();
@@ -17,7 +17,7 @@ class Background {
         });
     }
 
-    public get getName() {
+    public get getName(): string {
         return 'background';
     }
 

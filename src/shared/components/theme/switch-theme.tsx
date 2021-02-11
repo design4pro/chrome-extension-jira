@@ -3,28 +3,17 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Brightness4 from '@material-ui/icons/Brightness4';
 import Brightness7 from '@material-ui/icons/Brightness7';
 import BrightnessAuto from '@material-ui/icons/BrightnessAuto';
-import React, { Dispatch, SetStateAction, useCallback, useEffect } from 'react';
-import { onBrowserThemeChanged } from '../../util/browser-theme';
-import { ThemeType } from './model';
-import { useTheme } from './use-theme';
+import React, { Fragment, useCallback } from 'react';
+import { useTheme } from 'shared/hooks/ui/use-theme';
 
-export const SwitchTheme = () => {
+export const SwitchTheme = (): JSX.Element => {
     const [theme, setTheme] = useTheme();
-
-    const updateTheme: Dispatch<SetStateAction<ThemeType>> = useCallback(
-        (newTheme: ThemeType) => {
-            setTheme(newTheme);
-        },
-        [setTheme]
-    );
-    const setDarkTheme = useCallback(() => updateTheme('dark'), [updateTheme]);
-    const setLightTheme = useCallback(() => updateTheme('light'), [updateTheme]);
-    const setAutoTheme = useCallback(() => updateTheme('auto'), [updateTheme]);
-
-    useEffect(() => onBrowserThemeChanged(updateTheme), [updateTheme, setTheme]);
+    const setDarkTheme = useCallback(() => setTheme('dark'), [setTheme]);
+    const setLightTheme = useCallback(() => setTheme('light'), [setTheme]);
+    const setAutoTheme = useCallback(() => setTheme('auto'), [setTheme]);
 
     return (
-        <React.Fragment>
+        <Fragment>
             {theme === 'auto' && (
                 <Tooltip title='Toggle dark/light/auto theme' aria-label='Toggle dark/light/auto theme'>
                     <IconButton onClick={setDarkTheme} color='inherit'>
@@ -48,7 +37,7 @@ export const SwitchTheme = () => {
                     </IconButton>
                 </Tooltip>
             )}
-        </React.Fragment>
+        </Fragment>
     );
 };
 

@@ -6,9 +6,9 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const TerserWebpackPlugin = require('terser-webpack-plugin');
 const TsConfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
-const ExtensionReloader = require('webpack-extension-reloader');
 const { BuildOptimizerWebpackPlugin, buildOptimizerLoaderPath } = require('@angular-devkit/build-optimizer');
 const { version } = require('./package.json');
+const ESLintPlugin = require('eslint-webpack-plugin');
 
 const config = {
     mode: process.env.NODE_ENV,
@@ -29,25 +29,6 @@ const config = {
     },
     module: {
         rules: [
-            /**
-             * ESLINT
-             * First, run the linter.
-             * It's important to do this before Babel processes the JS.
-             * Only testing .ts and .tsx files (React code)
-             */
-            {
-                test: /\.([jt])sx?$/,
-                enforce: 'pre',
-                use: [
-                    {
-                        options: {
-                            eslintPath: require.resolve('eslint'),
-                        },
-                        loader: require.resolve('eslint-loader'),
-                    },
-                ],
-                exclude: /node_modules/,
-            },
             {
                 test: /\.([jt])sx?$/,
                 loader: `babel-loader`,
@@ -110,21 +91,24 @@ const config = {
     plugins: [
         new BuildOptimizerWebpackPlugin(),
         new ForkTsCheckerWebpackPlugin({
-            tsconfig: path.resolve(__dirname, 'tsconfig.json'),
+            async: true,
+            eslint: {
+                files: './src/**/*.{ts,tsx,js,jsx}', // required - same as command `eslint ./src/**/*.{ts,tsx,js,jsx} --ext .ts,.tsx,.js,.jsx`
+            },
         }),
         new webpack.DefinePlugin({
             global: 'window',
         }),
-        new CopyWebpackPlugin(
-            [
-                { from: '_locales', to: '_locales', force: true },
-                { from: 'assets', to: 'assets', force: true },
-                { from: 'popup/popup.html', to: 'popup/popup.html', transform: transformHtml },
-                { from: 'options/options.html', to: 'options/options.html', transform: transformHtml },
+        new CopyWebpackPlugin({
+            patterns: [
+                { from: 'src/_locales', to: '_locales', force: true },
+                { from: 'src/assets', to: 'assets', force: true },
+                { from: 'src/popup/popup.html', to: 'popup/popup.html', transform: transformHtml },
+                { from: 'src/options/options.html', to: 'options/options.html', transform: transformHtml },
                 {
-                    from: 'manifest.json',
+                    from: 'src/manifest.json',
                     to: 'manifest.json',
-                    transform: content => {
+                    transform: (content) => {
                         const jsonContent = JSON.parse(content);
                         jsonContent.version = version;
 
@@ -137,9 +121,12 @@ const config = {
                     },
                 },
             ],
-            { context: 'src' }
-        ),
+        }),
         new webpack.HotModuleReplacementPlugin(),
+        new ESLintPlugin({
+            extensions: ['.ts', '.tsx', '.mjs', '.js', '.jsx'],
+            fix: false,
+        }),
     ],
     devServer: {
         contentBase: './dist',
@@ -165,7 +152,6 @@ if (config.mode === 'production') {
                     ecma: 6,
                     safari10: true,
                     output: {
-                        // eslint-disable-next-line @typescript-eslint/camelcase
                         ascii_only: true,
                         comments: false,
                         webkit: true,
@@ -175,14 +161,6 @@ if (config.mode === 'production') {
         ],
         runtimeChunk: true,
     };
-}
-
-if (process.env.HMR === 'true') {
-    config.plugins = (config.plugins || []).concat([
-        new ExtensionReloader({
-            manifest: __dirname + '/src/manifest.json',
-        }),
-    ]);
 }
 
 function transformHtml(content) {

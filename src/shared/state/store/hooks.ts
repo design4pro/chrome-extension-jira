@@ -1,5 +1,6 @@
 import { useContext, useReducer, useState } from 'react';
-import StoreContext from './context';
+import StoreContext, { ContextProps } from './context';
+import { CURRENT_SCHEMA_VERSION, KEY_SCHEMA_VERSION } from './initial-state';
 import createUseStorageReducer from './reducer';
 import createUseStorageState from './state';
 
@@ -27,12 +28,21 @@ const createUseState = (storage: Storage | null): ReturnType<typeof createUseSto
     };
 };
 
-const getLocalStorage = () => (typeof localStorage === 'undefined' ? null : localStorage);
-const getSessionStorage = () => (typeof sessionStorage === 'undefined' ? null : sessionStorage);
+const getLocalStorage = (): Storage => (typeof localStorage === 'undefined' ? null : localStorage);
+const getSessionStorage = (): Storage => (typeof sessionStorage === 'undefined' ? null : sessionStorage);
 
 export const useLocalStorageState = createUseState(getLocalStorage());
 export const useSessionStorageState = createUseState(getSessionStorage());
 export const useLocalStorageReducer = createUseReducer(getLocalStorage());
 export const useSessionStorageReducer = createUseReducer(getSessionStorage());
 
-export const useStore = () => useContext(StoreContext);
+export const useStore = (): ContextProps => useContext(StoreContext);
+
+export const useCheckLocalStorageSchema = () => {
+    const [schemaVersion, setSchemaVersion] = useLocalStorageState(KEY_SCHEMA_VERSION, CURRENT_SCHEMA_VERSION);
+
+    if (schemaVersion !== CURRENT_SCHEMA_VERSION) {
+        window.localStorage.clear();
+        setSchemaVersion(CURRENT_SCHEMA_VERSION);
+    }
+};

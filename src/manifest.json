@@ -1,8 +1,8 @@
 {
-    "name": "JIRA",
+    "name": "Jira Worklogs Tracker",
     "version": null,
     "manifest_version": 2,
-    "description": "JIRA",
+    "description": "Chrome extension for worklogs in Jira",
     "icons": {
         "16": "assets/images/icon-16.png",
         "128": "assets/images/icon-128.png"
@@ -17,7 +17,7 @@
             "19": "assets/images/icon-19.png",
             "38": "assets/images/icon-38.png"
         },
-        "default_title": "JIRA",
+        "default_title": "Jira Worklogs Tracker",
         "default_popup": "popup/popup.html"
     },
     "options_page": "options/options.html",

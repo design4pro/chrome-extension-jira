@@ -1,26 +1,26 @@
-import { createMuiTheme, CssBaseline } from '@material-ui/core';
+import { createMuiTheme, CssBaseline, useMediaQuery } from '@material-ui/core';
 import { ThemeProvider } from '@material-ui/styles';
-import React from 'react';
-import { useTheme } from 'shared/componants/theme/use-theme';
-import { getBrowserTheme } from 'shared/util/browser-theme';
+import React, { useMemo } from 'react';
+import { useTheme } from 'shared/hooks/ui/use-theme';
 import { Layout } from './layout';
 
-export const App = () => {
-    // Clear local storage is schema version not match
-    // useCheckLocalStorageSchema();
-
-    let [theme] = useTheme();
-
-    if (theme === 'auto') {
-        theme = getBrowserTheme();
-    }
+export const App = (): JSX.Element => {
+    const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
+    const [theme] = useTheme();
 
     // we generate a MUI-theme from state's theme object
-    const muiTheme = createMuiTheme({
-        palette: {
-            type: theme,
-        },
-    });
+    const muiTheme = useMemo(
+        () =>
+            createMuiTheme({
+                palette: {
+                    mode: theme === 'auto' ? (prefersDarkMode ? 'dark' : 'light') : theme,
+                    primary: {
+                        main: '#3367d6',
+                    },
+                },
+            }),
+        [prefersDarkMode, theme]
+    );
 
     return (
         <ThemeProvider theme={muiTheme}>

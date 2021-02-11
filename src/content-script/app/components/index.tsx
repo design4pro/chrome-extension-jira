@@ -1,10 +1,7 @@
 import React from 'react';
 
-export default class Index extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-    render() {
-        return <div></div>;
-    }
-}
+export const Index = (): JSX.Element => {
+    return <div></div>;
+};
+
+export default Index;

@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-export const Layout = ({ name }) => {
-    return <React.Fragment>{name}</React.Fragment>;
+export const Layout = ({ name }): JSX.Element => {
+    return <React.Fragment>{name}t</React.Fragment>;
 };
 
 Layout.propTypes = {

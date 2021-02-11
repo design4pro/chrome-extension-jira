@@ -23,8 +23,9 @@
     "settings": { "react": { "version": "detect" } },
     "plugins": ["@typescript-eslint", "react", "import", "jsx-a11y", "react-hooks"],
     "rules": {
-        "@typescript-eslint/explicit-member-accessibility": "off",
         "@typescript-eslint/explicit-function-return-type": "off",
+        "@typescript-eslint/explicit-member-accessibility": "off",
+        "@typescript-eslint/explicit-module-boundary-types": "off",
         "@typescript-eslint/no-parameter-properties": "off",
         "array-callback-return": "warn",
         "dot-location": ["warn", "property"],
@@ -173,7 +174,11 @@
         ],
         "no-with": "warn",
         "no-whitespace-before-property": "warn",
-        "react-hooks/exhaustive-deps": "warn",
+        "react-hooks/exhaustive-deps": [
+            "warn", {
+              "additionalHooks": "useRecoilCallback"
+            }
+          ],
         "require-yield": "warn",
         "rest-spread-spacing": ["warn", "never"],
         "strict": ["warn", "never"],
